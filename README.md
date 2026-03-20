@@ -20,9 +20,9 @@ A financial news sentiment analysis pipeline that combines **reverse-engineered 
 
 ```
 FinSentio/
-├── StockSentiment.py          # Main module — API fetching, deduplication, pipeline orchestration
-├── getsentimentFinBERT.py     # FinBERT sentiment scoring (financial-specific)
-├── getsentimentFlair.py       # Flair sentiment scoring (general-purpose)
+├── stock_sentiment.py         # Main module — API fetching, deduplication, pipeline orchestration
+├── finbert_scorer.py          # FinBERT sentiment scoring (financial-specific)
+├── flair_scorer.py            # Flair sentiment scoring (general-purpose)
 ├── compare_models.py          # Side-by-side model comparison on real CNBC data
 ├── requirements.txt           # Python dependencies (PyTorch cu128, transformers, flair)
 └── README.md
@@ -87,7 +87,7 @@ After fetching 500 articles for Micron (MU), the pipeline generates a DataFrame 
 ### Basic Usage
 
 ```python
-from StockSentiment import get_news_sentiment
+from stock_sentiment import get_news_sentiment
 
 # Fetch and analyze news using FinBERT (default)
 ticker = "AAPL"

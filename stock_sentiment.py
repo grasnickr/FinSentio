@@ -1,8 +1,8 @@
 import requests
 import pandas as pd
 from datetime import datetime
-from getsentimentFinBERT import get_finbert_score
-from getsentimentFlair import get_flair_score
+from finbert_scorer import get_finbert_score
+from flair_scorer import get_flair_score
 
 BASE_URL = "https://api.queryly.com/cnbc/json.aspx?queryly_key=31a35d40a9a64ab3&query={ticker}&endindex={endindex}&batchsize=100&callback=&showfaceted=false&timezoneoffset=-120&facetedfields=formats&facetedkey=formats|&facetedvalue=!Press%20Release|&sort=date&additionalindexes=4cd6f71fbf22424d,937d600b0d0d4e23,3bfbe40caee7443e,626fdfcd96444f28"
 

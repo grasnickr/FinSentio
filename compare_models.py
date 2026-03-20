@@ -1,6 +1,6 @@
-from StockSentiment import fetch_articles, parse_date, UNIQUE_FIELD_JSON
-from getsentimentFinBERT import get_finbert_score
-from getsentimentFlair import get_flair_score
+from stock_sentiment import fetch_articles, parse_date, UNIQUE_FIELD_JSON
+from finbert_scorer import get_finbert_score
+from flair_scorer import get_flair_score
 import time
 import pandas as pd
 
