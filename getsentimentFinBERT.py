@@ -1,6 +1,5 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoConfig
 import torch
-import numpy as np
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model_name = "ProsusAI/finbert"

@@ -80,7 +80,7 @@ def run_comparison(ticker="SPY", max_pages=1):
         print(f"\n[{i}] {art['title'][:85]}{'...' if len(art['title']) > 85 else ''}")
         print(f"    FinBERT: {fb_score:+.4f}  |  Flair: {fl_score:+.4f}  |  Diff: {diff:.4f}")
 
-    # Zusammenfassung
+    # Summary
     n = len(articles)
     avg_fb = sum(finbert_scores) / n
     avg_fl = sum(flair_scores) / n
@@ -88,23 +88,23 @@ def run_comparison(ticker="SPY", max_pages=1):
     agree = sum(1 for f, l in zip(finbert_scores, flair_scores) if (f > 0) == (l > 0) or f == 0 or l == 0)
 
     print("\n" + "=" * 100)
-    print(f"{'ZUSAMMENFASSUNG':^100}")
+    print(f"{'SUMMARY':^100}")
     print("=" * 100)
 
-    print(f"\n  {'Metrik':<40} {'FinBERT':>10} {'Flair':>10}")
+    print(f"\n  {'Metric':<40} {'FinBERT':>10} {'Flair':>10}")
     print(f"  {'-' * 60}")
-    print(f"  {'Artikel analysiert':<40} {n:>10} {n:>10}")
-    print(f"  {'Durchschnittlicher Score':<40} {avg_fb:>+10.4f} {avg_fl:>+10.4f}")
-    print(f"  {'Gesamtzeit (s)':<40} {finbert_total_time:>10.2f} {flair_total_time:>10.2f}")
-    print(f"  {'Zeit pro Artikel (ms)':<40} {finbert_total_time/n*1000:>10.1f} {flair_total_time/n*1000:>10.1f}")
-    print(f"\n  Durchschnittliche Abweichung:  {avg_diff:.4f}")
-    print(f"  Richtungsübereinstimmung:      {agree}/{n} ({agree/n*100:.0f}%)")
+    print(f"  {'Articles analyzed':<40} {n:>10} {n:>10}")
+    print(f"  {'Average score':<40} {avg_fb:>+10.4f} {avg_fl:>+10.4f}")
+    print(f"  {'Total time (s)':<40} {finbert_total_time:>10.2f} {flair_total_time:>10.2f}")
+    print(f"  {'Time per article (ms)':<40} {finbert_total_time/n*1000:>10.1f} {flair_total_time/n*1000:>10.1f}")
+    print(f"\n  Average divergence:        {avg_diff:.4f}")
+    print(f"  Directional agreement:     {agree}/{n} ({agree/n*100:.0f}%)")
 
-    # Größte Abweichungen
+    # Largest divergences
     diffs = [(abs(f - l), i) for i, (f, l) in enumerate(zip(finbert_scores, flair_scores))]
     diffs.sort(reverse=True)
 
-    print(f"\n  Top 5 größte Abweichungen:")
+    print(f"\n  Top 5 largest divergences:")
     for diff, idx in diffs[:5]:
         print(f"    [{idx+1}] Diff: {diff:.4f} | {articles[idx]['title'][:70]}")
 

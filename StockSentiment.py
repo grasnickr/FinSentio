@@ -42,7 +42,6 @@ def process_batch(data, existing_urls, score_fn):
 
     articles = data['results']
     batch_data = []
-    new_urls_in_batch = set()
     found_duplicate = False
 
     for article in articles:
@@ -69,7 +68,6 @@ def process_batch(data, existing_urls, score_fn):
                 "sentiment_score": sentiment_score,
                 "url": article_url
             })
-            new_urls_in_batch.add(article_url)
 
         except Exception as e:
             print(f"Error working on: {article_url}: {e}")
@@ -92,7 +90,7 @@ def get_news_dataframe(max_pages, ticker, score_fn):
         if not data or 'results' not in data:
             break
 
-        current_batch, had_duplicates = process_batch(data, seen_urls, score_fn)
+        current_batch, _ = process_batch(data, seen_urls, score_fn)
         
 
         for art in current_batch:

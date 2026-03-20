@@ -32,16 +32,27 @@ CNBC-Sentiment-Pipeline/
 
 ## Example Output
 
-After fetching 500 articles for Micron (MU), the pipeline generates a DataFrame like this:
+After fetching 500 articles for Micron (MU), the pipeline generates a DataFrame with a single `sentiment_score` column based on the selected model:
 
+**FinBERT** (default) — `get_news_sentiment(maxpages=5, ticker="MU")`:
 
-| Title | Published Date | FinBERT | Flair | URL |
-| :--- | :--- | :--- | :--- | :--- |
-| Micron gets an upgrade from Bank of America after blowout quarter | 2025-12-18 | +0.9370 | +0.8237 | [View Article](https://www.cnbc.com/2025/12/18/micron-gets-an-upgrade-from-bank-of-america-after-blowout-quarter-and-guidance.html) |
-| Micron stock pops 10% as AI memory demand soars | 2025-12-18 | +0.4667 | -0.8773 | [View Article](https://www.cnbc.com/2025/12/18/micron-mu-stock-earnings-ai-memory-demand.html) |
-| U.S. finalizes more than $6.1 billion chips subsidy for Micron | 2024-12-10 | +0.5885 | -0.9414 | [View Article](https://www.cnbc.com/2024/12/10/us-finalizes-more-than-6point1-billion-chips-subsidy-for-micron-technology.html) |
-| Micron to exit server chips business in China after ban | 2025-10-17 | -0.0957 | -0.9996 | [View Article](https://www.cnbc.com/2025/10/17/micron-to-exit-server-chips-business-in-china-after-ban-report.html) |
-| Micron shares suffer steepest drop since 2020 on weak guidance | 2024-12-19 | -0.9190 | -1.0000 | [View Article](https://www.cnbc.com/2024/12/19/micron-headed-for-worst-day-since-2020-after-disappointing-guidance.html) |
+| Title | Published Date | Sentiment Score | URL |
+| :--- | :--- | :--- | :--- |
+| Micron gets an upgrade from Bank of America after blowout quarter | 2025-12-18 | +0.9370 | [View Article](https://www.cnbc.com/2025/12/18/micron-gets-an-upgrade-from-bank-of-america-after-blowout-quarter-and-guidance.html) |
+| Micron stock pops 10% as AI memory demand soars | 2025-12-18 | +0.4667 | [View Article](https://www.cnbc.com/2025/12/18/micron-mu-stock-earnings-ai-memory-demand.html) |
+| U.S. finalizes more than $6.1 billion chips subsidy for Micron | 2024-12-10 | +0.5885 | [View Article](https://www.cnbc.com/2024/12/10/us-finalizes-more-than-6point1-billion-chips-subsidy-for-micron-technology.html) |
+| Micron to exit server chips business in China after ban | 2025-10-17 | -0.0957 | [View Article](https://www.cnbc.com/2025/10/17/micron-to-exit-server-chips-business-in-china-after-ban-report.html) |
+| Micron shares suffer steepest drop since 2020 on weak guidance | 2024-12-19 | -0.9190 | [View Article](https://www.cnbc.com/2024/12/19/micron-headed-for-worst-day-since-2020-after-disappointing-guidance.html) |
+
+**Flair** — `get_news_sentiment(maxpages=5, ticker="MU", model="flair")`:
+
+| Title | Published Date | Sentiment Score | URL |
+| :--- | :--- | :--- | :--- |
+| Micron gets an upgrade from Bank of America after blowout quarter | 2025-12-18 | +0.8237 | [View Article](https://www.cnbc.com/2025/12/18/micron-gets-an-upgrade-from-bank-of-america-after-blowout-quarter-and-guidance.html) |
+| Micron stock pops 10% as AI memory demand soars | 2025-12-18 | -0.8773 | [View Article](https://www.cnbc.com/2025/12/18/micron-mu-stock-earnings-ai-memory-demand.html) |
+| U.S. finalizes more than $6.1 billion chips subsidy for Micron | 2024-12-10 | -0.9414 | [View Article](https://www.cnbc.com/2024/12/10/us-finalizes-more-than-6point1-billion-chips-subsidy-for-micron-technology.html) |
+| Micron to exit server chips business in China after ban | 2025-10-17 | -0.9996 | [View Article](https://www.cnbc.com/2025/10/17/micron-to-exit-server-chips-business-in-china-after-ban-report.html) |
+| Micron shares suffer steepest drop since 2020 on weak guidance | 2024-12-19 | -1.0000 | [View Article](https://www.cnbc.com/2024/12/19/micron-headed-for-worst-day-since-2020-after-disappointing-guidance.html) |
 
 **Sentiment Score Range**: -1.0 (very negative) to +1.0 (very positive)
 

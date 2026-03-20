@@ -29,8 +29,7 @@ def get_flair_score(text: str) -> float:
         
     return round(score, 4)
 
-#Test the function
 if __name__ == "__main__":
     test_text = "The company reported record profits for Q3, massively beating analyst expectations."
-    print(f"Test Nachricht: {test_text}")
+    print(f"Test input: {test_text}")
     print(f"Flair Sentiment Score: {get_flair_score(test_text)}")

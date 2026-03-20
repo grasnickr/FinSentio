@@ -3,3 +3,7 @@ venv/
 __pycache__/
 *.csv
 *.pth
+.pytest_cache/
+*.egg-info/
+dist/
+build/
