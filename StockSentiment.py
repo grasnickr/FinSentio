@@ -1,16 +1,22 @@
 import requests
 import pandas as pd
 from datetime import datetime
-import json
-import sys
 from getsentimentFinBERT import get_finbert_score
+from getsentimentFlair import get_flair_score
 
 BASE_URL = "https://api.queryly.com/cnbc/json.aspx?queryly_key=31a35d40a9a64ab3&query={ticker}&endindex={endindex}&batchsize=100&callback=&showfaceted=false&timezoneoffset=-120&facetedfields=formats&facetedkey=formats|&facetedvalue=!Press%20Release|&sort=date&additionalindexes=4cd6f71fbf22424d,937d600b0d0d4e23,3bfbe40caee7443e,626fdfcd96444f28"
 
 UNIQUE_FIELD_JSON = 'url' 
 
-def get_news_sentiment(maxpages:int, ticker: str) -> pd.DataFrame:
-    return get_news_dataframe(maxpages, ticker)
+SCORE_FUNCTIONS = {
+    "finbert": get_finbert_score,
+    "flair": get_flair_score,
+}
+
+def get_news_sentiment(maxpages: int, ticker: str, model: str = "finbert") -> pd.DataFrame:
+    if model not in SCORE_FUNCTIONS:
+        raise ValueError(f"Unknown model '{model}'. Choose from: {list(SCORE_FUNCTIONS.keys())}")
+    return get_news_dataframe(maxpages, ticker, SCORE_FUNCTIONS[model])
 
 def parse_date(date_str):
     if not date_str:
@@ -30,7 +36,7 @@ def fetch_articles(endindex, ticker):
         print(f"Error at API request {str(e)}")
         return None
 
-def process_batch(data, existing_urls):
+def process_batch(data, existing_urls, score_fn):
     if not data or 'results' not in data:
         return [], False
 
@@ -54,7 +60,7 @@ def process_batch(data, existing_urls):
             pub_date = parse_date(raw_date)
             input_text = f"{title}: {description}"
             
-            sentiment_score = get_finbert_score(input_text)
+            sentiment_score = score_fn(input_text)
             
             batch_data.append({
                 "title": title,
@@ -70,13 +76,13 @@ def process_batch(data, existing_urls):
 
     return batch_data, found_duplicate
 
-def get_news_dataframe(max_pages, ticker):
+def get_news_dataframe(max_pages, ticker, score_fn):
     all_articles_list = []
     seen_urls = set()
     endindex = 0
     batch_counter = 0
 
-    print(f"Start fetching news for: ", ticker, " ...")
+    print(f"Start fetching news for: {ticker} ...")
 
     while batch_counter < max_pages:
         batch_counter += 1
@@ -86,7 +92,7 @@ def get_news_dataframe(max_pages, ticker):
         if not data or 'results' not in data:
             break
 
-        current_batch, had_duplicates = process_batch(data, seen_urls)
+        current_batch, had_duplicates = process_batch(data, seen_urls, score_fn)
         
 
         for art in current_batch:

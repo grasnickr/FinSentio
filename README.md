@@ -8,10 +8,25 @@ An automated pipeline designed to extract and analyze financial news sentiment f
 ## Features
 
 * **Undocumented API Integration**: Efficiently fetches news data directly via CNBC's internal search infrastructure through reverse-engineered endpoints
-* **Financial Sentiment Analysis**: Utilizes the **ProsusAI/FinBERT** model, specifically fine-tuned for financial texts, achieving state-of-the-art accuracy on financial sentiment tasks
+* **Multi-Model Sentiment Analysis**: Supports **ProsusAI/FinBERT** (fine-tuned for financial texts) and **Flair** (general-purpose sentiment) — selectable via a simple `model` parameter
+* **Model Comparison Tool**: Built-in script to compare FinBERT and Flair side-by-side on real CNBC news data
 * **Automated Data Pipeline**: Generates cleaned Pandas DataFrames ready for downstream analysis, visualization, or integration with machine learning models
-* **Hardware Optimized**: Supports CUDA acceleration for fast inference on NVIDIA GPUs (up to 10x faster than CPU)
+* **Hardware Optimized**: Supports CUDA acceleration for fast inference on NVIDIA GPUs (requires CUDA 12.8+ for RTX 50-series Blackwell GPUs)
 * **Deduplication & Error Handling**: Robust duplicate detection and comprehensive error handling for reliable long-running operations
+
+---
+
+## Project Structure
+
+```
+CNBC-Sentiment-Pipeline/
+├── StockSentiment.py          # Main module — API fetching, deduplication, pipeline orchestration
+├── getsentimentFinBERT.py     # FinBERT sentiment scoring (financial-specific)
+├── getsentimentFlair.py       # Flair sentiment scoring (general-purpose)
+├── compare_models.py          # Side-by-side model comparison on real CNBC data
+├── requirements.txt           # Python dependencies (PyTorch cu128, transformers, flair)
+└── README.md
+```
 
 ---
 
@@ -45,10 +60,10 @@ After fetching 500 articles for Micron (MU), the pipeline generates a DataFrame 
 2. **Create Virtual Environment**:
    ```bash
    python -m venv venv
-   
+
    # Windows
    .\venv\Scripts\activate
-   
+
    # Linux/Mac
    source venv/bin/activate
    ```
@@ -63,17 +78,37 @@ After fetching 500 articles for Micron (MU), the pipeline generates a DataFrame 
 ```python
 from StockSentiment import get_news_sentiment
 
-# Fetch and analyze news for a specific ticker
+# Fetch and analyze news using FinBERT (default)
 ticker = "AAPL"
-df = get_news_sentiment(maxpages=5, ticker=ticker)  # 5 pages = ~00 articles
+df = get_news_sentiment(maxpages=5, ticker=ticker)  # 5 pages = ~500 articles
+
+# Or use Flair as an alternative sentiment model
+df = get_news_sentiment(maxpages=5, ticker=ticker, model="flair")
 
 # Display results
 if not df.empty:
-    print(f"\n Analyzed {len(df)} articles for {ticker}")
+    print(f"\nAnalyzed {len(df)} articles for {ticker}")
     print(f"Average Sentiment: {df['sentiment_score'].mean():.4f}")
     print("\nMost Recent Articles:")
     print(df[['published_date', 'title', 'sentiment_score']].head(10))
 ```
+
+### Model Comparison
+
+Compare FinBERT and Flair side-by-side on real CNBC news:
+
+```bash
+# Compare models on 100 SPY articles (default)
+python compare_models.py
+
+# Compare on 200 Apple articles
+python compare_models.py AAPL 2
+
+# Compare on 100 Tesla articles
+python compare_models.py TSLA 1
+```
+
+The comparison script outputs per-article scores, timing benchmarks, directional agreement, and the top 5 largest divergences between models.
 
 ### Advanced Example: Time Series Analysis
 
@@ -108,17 +143,29 @@ plt.show()
 - **Pagination**: Automatic handling via `endindex` parameter
 - **Rate Limiting**: Built-in request timeouts (20s) and error handling
 
-### Sentiment Model
-- **Model**: [ProsusAI/FinBERT](https://huggingface.co/ProsusAI/finbert)
-- **Architecture**: BERT-based transformer, fine-tuned on financial texts
-- **Input**: Concatenated title + description (max 512 tokens)
-- **Output**: Composite score from positive/negative probabilities
-  - Formula: `score = P(positive) - P(negative)`
-  - Range: [-1.0, 1.0]
+### Sentiment Models
 
+| Model | Best For | Speed | Behavior |
+|---|---|---|---|
+| `finbert` (default) | Financial texts | ~9ms/article | Differenzierte Scores, versteht Finanz-Jargon wie "golden cross", "downgrade", "guidance" |
+| `flair` | General sentiment | ~5ms/article | Schneller, tendiert zu extremen Scores (nahe +/-1.0) |
+
+**Details:**
+- **FinBERT**: [ProsusAI/FinBERT](https://huggingface.co/ProsusAI/finbert) — BERT fine-tuned on financial data. Score = `P(positive) - P(negative)`
+- **Flair**: Pre-trained DistilBERT sentiment classifier. Outputs signed confidence score
+
+Both models:
+- **Input**: Concatenated title + description (max 512 tokens for FinBERT)
+- **Output**: Score range [-1.0, 1.0]
+- **GPU**: CUDA acceleration when available
+
+### GPU Requirements
+
+- **CUDA 12.8+** required for NVIDIA RTX 50-series (Blackwell architecture)
+- Older GPUs work with CUDA 12.6+
+- Automatic CPU fallback if no GPU is available
 
 ---
-
 
 ## Use Cases
 
@@ -135,7 +182,7 @@ plt.show()
 - **API Stability**: Uses reverse-engineered endpoints that may change without notice
 - **Rate Limiting**: No official rate limits known, but implement delays for large-scale scraping
 - **Legal**: Ensure compliance with CNBC's Terms of Service for your use case
-- **Sentiment Accuracy**: FinBERT is trained on financial texts but not perfect - always validate results
+- **Sentiment Accuracy**: FinBERT is optimized for financial texts; Flair is general-purpose — use the comparison tool to evaluate for your use case
 - **Historical Data**: API provides recent news; older articles may have limited availability
 
 ---
