@@ -8,7 +8,7 @@ An automated pipeline designed to extract and analyze financial news sentiment f
 ## Features
 
 * **Undocumented API Integration**: Efficiently fetches news data directly via CNBC's internal search infrastructure through reverse-engineered endpoints
-* **Financial Sentiment Analysis**: Utilizes the **ProsusAI/FinBERT** model, specifically fine-tuned for financial texts, achieving state-of-the-art accuracy on financial sentiment tasks
+* **Financial Sentiment Analysis**: Supports multiple NLP models — **ProsusAI/FinBERT** (fine-tuned for financial texts) and **Flair** (general-purpose sentiment) — selectable via a simple parameter
 * **Automated Data Pipeline**: Generates cleaned Pandas DataFrames ready for downstream analysis, visualization, or integration with machine learning models
 * **Hardware Optimized**: Supports CUDA acceleration for fast inference on NVIDIA GPUs (up to 10x faster than CPU)
 * **Deduplication & Error Handling**: Robust duplicate detection and comprehensive error handling for reliable long-running operations
@@ -65,7 +65,10 @@ from StockSentiment import get_news_sentiment
 
 # Fetch and analyze news for a specific ticker
 ticker = "AAPL"
-df = get_news_sentiment(maxpages=5, ticker=ticker)  # 5 pages = ~00 articles
+df = get_news_sentiment(maxpages=5, ticker=ticker)  # 5 pages = ~500 articles
+
+# Or use Flair as an alternative sentiment model
+# df = get_news_sentiment(maxpages=5, ticker=ticker, model="flair")
 
 # Display results
 if not df.empty:
@@ -108,13 +111,15 @@ plt.show()
 - **Pagination**: Automatic handling via `endindex` parameter
 - **Rate Limiting**: Built-in request timeouts (20s) and error handling
 
-### Sentiment Model
-- **Model**: [ProsusAI/FinBERT](https://huggingface.co/ProsusAI/finbert)
-- **Architecture**: BERT-based transformer, fine-tuned on financial texts
-- **Input**: Concatenated title + description (max 512 tokens)
-- **Output**: Composite score from positive/negative probabilities
-  - Formula: `score = P(positive) - P(negative)`
-  - Range: [-1.0, 1.0]
+### Sentiment Models
+
+| Model | Best For | Details |
+|---|---|---|
+| `finbert` (default) | Financial texts | [ProsusAI/FinBERT](https://huggingface.co/ProsusAI/finbert) — BERT fine-tuned on financial data. Score = `P(positive) - P(negative)` |
+| `flair` | General sentiment | Flair's pre-trained sentiment classifier. Outputs signed confidence score |
+
+- **Input**: Concatenated title + description (max 512 tokens for FinBERT)
+- **Output**: Score range [-1.0, 1.0]
 
 
 ---
