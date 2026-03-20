@@ -1,6 +1,6 @@
-# CNBC Sentiment Pipeline
+# FinSentio
 
-An automated pipeline designed to extract and analyze financial news sentiment from CNBC. This project combines **reverse-engineered API access** with state-of-the-art **Natural Language Processing (NLP)** to quantify market sentiment for specific stock tickers.
+A financial news sentiment analysis pipeline that combines **reverse-engineered API access** with state-of-the-art **Natural Language Processing (NLP)** to quantify market sentiment for specific stock tickers.
 
 
 ---
@@ -19,7 +19,7 @@ An automated pipeline designed to extract and analyze financial news sentiment f
 ## Project Structure
 
 ```
-CNBC-Sentiment-Pipeline/
+FinSentio/
 ├── StockSentiment.py          # Main module — API fetching, deduplication, pipeline orchestration
 ├── getsentimentFinBERT.py     # FinBERT sentiment scoring (financial-specific)
 ├── getsentimentFlair.py       # Flair sentiment scoring (general-purpose)
@@ -64,8 +64,8 @@ After fetching 500 articles for Micron (MU), the pipeline generates a DataFrame 
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/grasnickr/CNBC-Sentiment-Pipeline
-   cd CNBC-Sentiment-Pipeline
+   git clone https://github.com/grasnickr/FinSentio
+   cd FinSentio
    ```
 
 2. **Create Virtual Environment**:
